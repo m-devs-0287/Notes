@@ -5,43 +5,41 @@ addBtn.addEventListener("click", () => addNewNote(""));
 function addNewNote(text = "") {
   const note = document.createElement("div");
   note.classList.add("note");
-
+  // note element template
   note.innerHTML = `
         <div class="tools">
-          <button class="edit"><i class="fas fa-edit"></i></button>
-          <button class="delete"><i class="fas fa-trash-alt"></i></button>
+          <button><i class="fas fa-edit edit"></i></button>
+          <button><i class="fas fa-trash-alt delete"></i></button>
         </div>
 
-        <div class="main ${text ? "" : "hidden"}"></div>
-        <textarea class="text-area ${text ? "hidden" : ""}"></textarea>
+        <div class="main hidden"></div>
+        <textarea class="text-area"></textarea>
   `;
-
-  const editBtn = document.querySelector(".edit");
-  const deleteBtn = document.querySelector(".delete");
-  const main = document.querySelector(".main");
-  const textArea = document.querySelector("textarea");
-
-  document.body.addEventListener("input", (e) => {
-    if(e.target.classList.contains('text-area')){
-      
-      const {value} = e.target
-      console.log(value);
-      console.log(e.target.parentElement.children[1]);
-
-      e.target.parentElement.children[1].innerHTML = value
-      
-
-    }
-  });
-
-  document.body.addEventListener("click", (e) => {
-    if (e.target.parentElement.classList.contains("delete")) {
-      e.target.parentElement.parentElement.parentElement.remove();
-    } else if (e.target.parentElement.classList.contains("edit")) {
-      document.querySelector(".main").classList.toggle("hidden");
-      document.querySelector("textarea").classList.toggle("hidden");
-    }
-  });
-
   document.body.appendChild(note);
 }
+
+document.body.addEventListener("click", (e) => {
+  //if we press any item on the body with the class of edit
+  if (e.target.classList.contains("edit")) {
+    // select elements main and text-area
+    const textArea =
+      e.target.parentElement.parentElement.parentElement.children[2];
+    const main = e.target.parentElement.parentElement.parentElement.children[1];
+
+    // get value from text-area
+    const value = textArea.value;
+
+    // add value to main
+    main.innerText = value;
+
+    //this will switch textarea from an none editable div
+    if (main.innerText) {
+      textArea.classList.toggle("hidden");
+      main.classList.toggle("hidden");
+    }
+  }
+  // this will delete the note
+  if (e.target.classList.contains("delete")) {
+    e.target.parentElement.parentElement.parentElement.remove();
+  }
+});
